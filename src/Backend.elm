@@ -1,6 +1,6 @@
 module Backend exposing (..)
 
-import Lamdera exposing (ClientId, SessionId)
+import Lamdera exposing (ClientId, SessionId, broadcast, onConnect, sendToFrontend)
 import Types exposing (..)
 
 
@@ -18,13 +18,13 @@ app =
         { init = init
         , update = update
         , updateFromFrontend = updateFromFrontend
-        , subscriptions = \m -> Sub.none
+        , subscriptions = subscriptions
         }
 
 
 init : ( Model, Cmd BackendMsg )
 init =
-    ( {}
+    ( { counter = 0 }
     , Cmd.none
     )
 
@@ -32,12 +32,21 @@ init =
 update : BackendMsg -> Model -> ( Model, Cmd BackendMsg )
 update msg model =
     case msg of
-        NoOpBackendMsg ->
-            ( model, Cmd.none )
+        NewClient clientId ->
+            ( model, sendToFrontend clientId (TfNewCounter model.counter) )
 
 
 updateFromFrontend : SessionId -> ClientId -> ToBackend -> Model -> ( Model, Cmd BackendMsg )
 updateFromFrontend _ _ msg model =
     case msg of
-        NoOpToBackend ->
-            ( model, Cmd.none )
+        TbInc ->
+            let
+                newCounter =
+                    model.counter + 1
+            in
+            ( { model | counter = newCounter }, broadcast (TfNewCounter newCounter) )
+
+
+subscriptions : Model -> Sub BackendMsg
+subscriptions _ =
+    onConnect (\_ -> NewClient)

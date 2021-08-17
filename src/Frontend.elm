@@ -2,8 +2,9 @@ module Frontend exposing (..)
 
 import Browser exposing (UrlRequest(..))
 import Browser.Navigation as Nav
-import Html exposing (text)
-import Lamdera
+import Html exposing (br, button, text)
+import Html.Events exposing (onClick)
+import Lamdera exposing (sendToBackend)
 import Types exposing (..)
 import Url
 
@@ -20,8 +21,8 @@ type alias Model =
 app =
     Lamdera.frontend
         { init = init
-        , onUrlRequest = always NoOpFrontendMsg
-        , onUrlChange = always NoOpFrontendMsg
+        , onUrlRequest = always NoOp
+        , onUrlChange = always NoOp
         , update = update
         , updateFromBackend = updateFromBackend
         , subscriptions = \m -> Sub.none
@@ -31,23 +32,32 @@ app =
 
 init : Url.Url -> Nav.Key -> ( Model, Cmd FrontendMsg )
 init _ _ =
-    ( {}, Cmd.none )
+    ( { counter = 0 }, Cmd.none )
 
 
 update : FrontendMsg -> Model -> ( Model, Cmd FrontendMsg )
 update msg model =
     case msg of
-        NoOpFrontendMsg ->
+        NoOp ->
             ( model, Cmd.none )
+
+        Inc ->
+            ( model, sendToBackend TbInc )
 
 
 updateFromBackend : ToFrontend -> Model -> ( Model, Cmd FrontendMsg )
 updateFromBackend msg model =
     case msg of
-        NoOpToFrontend ->
-            ( model, Cmd.none )
+        TfNewCounter counter ->
+            ( { model | counter = counter }, Cmd.none )
 
 
 view : Model -> Browser.Document FrontendMsg
-view _ =
-    { title = "", body = [ text "Hello, world!" ] }
+view model =
+    { title = ""
+    , body =
+        [ text ("counter = " ++ String.fromInt model.counter)
+        , br [] []
+        , button [ onClick Inc ] [ text "Increment" ]
+        ]
+    }
