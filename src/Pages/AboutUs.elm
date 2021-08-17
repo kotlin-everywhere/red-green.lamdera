@@ -1,4 +1,4 @@
-module Pages.Home_ exposing (view)
+module Pages.AboutUs exposing (view)
 
 import Gen.Route as Route
 import Html exposing (a, br, h1, text)
@@ -10,7 +10,7 @@ import View exposing (View)
 view : View msg
 view =
     layout
-        [ h1 [] [ text "Home" ]
+        [ h1 [] [ text "AboutUs" ]
         , br [] []
-        , a [ href (Route.toHref Route.AboutUs) ] [ text "Let go to AboutUs" ]
+        , a [ href (Route.toHref Route.Home_) ] [ text "Back to Home" ]
         ]

@@ -3,12 +3,14 @@ module Gen.Pages exposing (Model, Msg, init, subscriptions, update, view)
 import Browser.Navigation exposing (Key)
 import Effect exposing (Effect)
 import ElmSpa.Page
+import Gen.Params.AboutUs
 import Gen.Params.Home_
 import Gen.Params.NotFound
 import Gen.Model as Model
 import Gen.Msg as Msg
 import Gen.Route as Route exposing (Route)
 import Page exposing (Page)
+import Pages.AboutUs
 import Pages.Home_
 import Pages.NotFound
 import Request exposing (Request)
@@ -29,6 +31,9 @@ type alias Msg =
 init : Route -> Shared.Model -> Url -> Key -> ( Model, Effect Msg )
 init route =
     case route of
+        Route.AboutUs ->
+            pages.aboutUs.init ()
+    
         Route.Home_ ->
             pages.home_.init ()
     
@@ -51,6 +56,9 @@ view model_ =
         Model.Redirecting_ ->
             \_ _ _ -> View.none
     
+        Model.AboutUs params ->
+            pages.aboutUs.view params ()
+    
         Model.Home_ params ->
             pages.home_.view params ()
     
@@ -64,6 +72,9 @@ subscriptions model_ =
         Model.Redirecting_ ->
             \_ _ _ -> Sub.none
     
+        Model.AboutUs params ->
+            pages.aboutUs.subscriptions params ()
+    
         Model.Home_ params ->
             pages.home_.subscriptions params ()
     
@@ -76,11 +87,13 @@ subscriptions model_ =
 
 
 pages :
-    { home_ : Static Gen.Params.Home_.Params
+    { aboutUs : Static Gen.Params.AboutUs.Params
+    , home_ : Static Gen.Params.Home_.Params
     , notFound : Static Gen.Params.NotFound.Params
     }
 pages =
-    { home_ = static Pages.Home_.view Model.Home_
+    { aboutUs = static Pages.AboutUs.view Model.AboutUs
+    , home_ = static Pages.Home_.view Model.Home_
     , notFound = static Pages.NotFound.view Model.NotFound
     }
 
