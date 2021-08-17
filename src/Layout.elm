@@ -1,6 +1,6 @@
 module Layout exposing (layout, nexonLv1GothicLight, nexonLv1GothicRegular)
 
-import Element exposing (Attribute, Element)
+import Element exposing (Attribute, Element, fill, height, minimum, width)
 import Element.Font as Font
 import Html exposing (node, text)
 import View exposing (View)
@@ -11,7 +11,8 @@ layout element =
     { title = "The Red-Green Game"
     , body =
         [ node "style" [] [ text style ]
-        , Element.layout [] element
+        , Element.layout [ width (minimum 428 fill), height (minimum 926 fill) ] <|
+            element
         ]
     }
 
