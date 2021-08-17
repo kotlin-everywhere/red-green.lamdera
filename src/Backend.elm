@@ -1,12 +1,16 @@
 module Backend exposing (..)
 
-import Html
 import Lamdera exposing (ClientId, SessionId)
 import Types exposing (..)
 
 
 type alias Model =
     BackendModel
+
+
+
+-- lamdera backend entry point
+--noinspection ElmUnusedSymbol
 
 
 app =
@@ -20,7 +24,7 @@ app =
 
 init : ( Model, Cmd BackendMsg )
 init =
-    ( { message = "Hello!" }
+    ( {}
     , Cmd.none
     )
 
@@ -33,7 +37,7 @@ update msg model =
 
 
 updateFromFrontend : SessionId -> ClientId -> ToBackend -> Model -> ( Model, Cmd BackendMsg )
-updateFromFrontend sessionId clientId msg model =
+updateFromFrontend _ _ msg model =
     case msg of
         NoOpToBackend ->
             ( model, Cmd.none )
