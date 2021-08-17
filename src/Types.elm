@@ -1,10 +1,10 @@
 module Types exposing (..)
 
-import Main
+import SpaMain
 
 
 type alias FrontendModel =
-    { main : Main.Model }
+    { main : SpaMain.Model }
 
 
 type alias BackendModel =
@@ -12,7 +12,7 @@ type alias BackendModel =
 
 
 type FrontendMsg
-    = MainMsg Main.Msg
+    = MainMsg SpaMain.Msg
 
 
 type ToBackend

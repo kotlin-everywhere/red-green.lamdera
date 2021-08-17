@@ -60,7 +60,7 @@ batch =
 
 
 
--- Used by Main.elm
+-- Used by SpaMain.elm
 
 
 toCmd : ( Shared.Msg -> msg, pageMsg -> msg ) -> Effect pageMsg -> Cmd msg
