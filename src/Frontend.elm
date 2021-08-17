@@ -1,16 +1,12 @@
 module Frontend exposing (..)
 
 import Browser exposing (UrlRequest(..))
-import Browser.Navigation as Nav
+import Browser.Navigation
 import Html exposing (br, button, text)
 import Html.Events exposing (onClick)
 import Lamdera exposing (sendToBackend)
-import Types exposing (..)
-import Url
-
-
-type alias Model =
-    FrontendModel
+import Types
+import Url exposing (Url)
 
 
 
@@ -18,11 +14,20 @@ type alias Model =
 --noinspection ElmUnusedSymbol
 
 
+app :
+    { init : Url -> Browser.Navigation.Key -> ( Types.FrontendModel, Cmd Types.FrontendMsg )
+    , view : Types.FrontendModel -> Browser.Document Types.FrontendMsg
+    , update : Types.FrontendMsg -> Types.FrontendModel -> ( Types.FrontendModel, Cmd Types.FrontendMsg )
+    , updateFromBackend : Types.ToFrontend -> Types.FrontendModel -> ( Types.FrontendModel, Cmd Types.FrontendMsg )
+    , subscriptions : Types.FrontendModel -> Sub Types.FrontendMsg
+    , onUrlRequest : Browser.UrlRequest -> Types.FrontendMsg
+    , onUrlChange : Url.Url -> Types.FrontendMsg
+    }
 app =
     Lamdera.frontend
         { init = init
-        , onUrlRequest = always NoOp
-        , onUrlChange = always NoOp
+        , onUrlRequest = always Types.NoOp
+        , onUrlChange = always Types.NoOp
         , update = update
         , updateFromBackend = updateFromBackend
         , subscriptions = \m -> Sub.none
@@ -30,34 +35,34 @@ app =
         }
 
 
-init : Url.Url -> Nav.Key -> ( Model, Cmd FrontendMsg )
+init : Url.Url -> Browser.Navigation.Key -> ( Types.FrontendModel, Cmd Types.FrontendMsg )
 init _ _ =
     ( { counter = 0 }, Cmd.none )
 
 
-update : FrontendMsg -> Model -> ( Model, Cmd FrontendMsg )
+update : Types.FrontendMsg -> Types.FrontendModel -> ( Types.FrontendModel, Cmd Types.FrontendMsg )
 update msg model =
     case msg of
-        NoOp ->
+        Types.NoOp ->
             ( model, Cmd.none )
 
-        Inc ->
-            ( model, sendToBackend TbInc )
+        Types.Inc ->
+            ( model, sendToBackend Types.TbInc )
 
 
-updateFromBackend : ToFrontend -> Model -> ( Model, Cmd FrontendMsg )
+updateFromBackend : Types.ToFrontend -> Types.FrontendModel -> ( Types.FrontendModel, Cmd Types.FrontendMsg )
 updateFromBackend msg model =
     case msg of
-        TfNewCounter counter ->
+        Types.TfNewCounter counter ->
             ( { model | counter = counter }, Cmd.none )
 
 
-view : Model -> Browser.Document FrontendMsg
+view : Types.FrontendModel -> Browser.Document Types.FrontendMsg
 view model =
     { title = ""
     , body =
         [ text ("counter = " ++ String.fromInt model.counter)
         , br [] []
-        , button [ onClick Inc ] [ text "Increment" ]
+        , button [ onClick Types.Inc ] [ text "Increment" ]
         ]
     }
