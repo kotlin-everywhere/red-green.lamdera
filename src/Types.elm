@@ -1,28 +1,25 @@
 module Types exposing (..)
 
-import Lamdera exposing (ClientId, SessionId)
-
 
 type alias FrontendModel =
-    { counter : Int }
+    {}
 
 
 type alias BackendModel =
-    { counter : Int }
+    {}
 
 
 type FrontendMsg
-    = Inc
-    | NoOp
+    = NoOp
 
 
 type ToBackend
-    = TbInc
+    = TbNoOp
 
 
 type BackendMsg
-    = NewClient ClientId
+    = BeNoOp
 
 
 type ToFrontend
-    = TfNewCounter Int
+    = TfNoOp

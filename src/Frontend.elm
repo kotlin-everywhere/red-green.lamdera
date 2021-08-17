@@ -2,9 +2,8 @@ module Frontend exposing (..)
 
 import Browser exposing (UrlRequest(..))
 import Browser.Navigation
-import Html exposing (br, button, text)
-import Html.Events exposing (onClick)
-import Lamdera exposing (sendToBackend)
+import Html exposing (text)
+import Lamdera
 import Types
 import Url exposing (Url)
 
@@ -37,7 +36,7 @@ app =
 
 init : Url.Url -> Browser.Navigation.Key -> ( Types.FrontendModel, Cmd Types.FrontendMsg )
 init _ _ =
-    ( { counter = 0 }, Cmd.none )
+    ( {}, Cmd.none )
 
 
 update : Types.FrontendMsg -> Types.FrontendModel -> ( Types.FrontendModel, Cmd Types.FrontendMsg )
@@ -46,23 +45,14 @@ update msg model =
         Types.NoOp ->
             ( model, Cmd.none )
 
-        Types.Inc ->
-            ( model, sendToBackend Types.TbInc )
-
 
 updateFromBackend : Types.ToFrontend -> Types.FrontendModel -> ( Types.FrontendModel, Cmd Types.FrontendMsg )
 updateFromBackend msg model =
     case msg of
-        Types.TfNewCounter counter ->
-            ( { model | counter = counter }, Cmd.none )
+        Types.TfNoOp ->
+            ( model, Cmd.none )
 
 
 view : Types.FrontendModel -> Browser.Document Types.FrontendMsg
-view model =
-    { title = ""
-    , body =
-        [ text ("counter = " ++ String.fromInt model.counter)
-        , br [] []
-        , button [ onClick Types.Inc ] [ text "Increment" ]
-        ]
-    }
+view _ =
+    { title = "", body = [ text "Hello, Lamdera!" ] }
