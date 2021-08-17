@@ -5,7 +5,8 @@ import Browser.Navigation
 import Html
 import Json.Encode
 import Lamdera
-import SpaMain
+import Shared
+import SpaFrontend
 import Types
 import Url exposing (Url)
 
@@ -27,8 +28,8 @@ app :
 app =
     Lamdera.frontend
         { init = init
-        , onUrlRequest = Types.MainMsg << SpaMain.ClickedLink
-        , onUrlChange = Types.MainMsg << SpaMain.ChangedUrl
+        , onUrlRequest = Types.MainMsg << SpaFrontend.ClickedLink
+        , onUrlChange = Types.MainMsg << SpaFrontend.ChangedUrl
         , update = update
         , updateFromBackend = updateFromBackend
         , subscriptions = subscriptions
@@ -38,17 +39,17 @@ app =
 
 init : Url.Url -> Browser.Navigation.Key -> ( Types.FrontendModel, Cmd Types.FrontendMsg )
 init url key =
-    wrapMain (SpaMain.init Json.Encode.null url key)
+    wrapMain (SpaFrontend.init Json.Encode.null url key)
 
 
 update : Types.FrontendMsg -> Types.FrontendModel -> ( Types.FrontendModel, Cmd Types.FrontendMsg )
 update msg model =
     case msg of
         Types.MainMsg mainMsg ->
-            wrapMain (SpaMain.update mainMsg model.main)
+            wrapMain (SpaFrontend.update mainMsg model.main)
 
 
-wrapMain : ( SpaMain.Model, Cmd SpaMain.Msg ) -> ( Types.FrontendModel, Cmd Types.FrontendMsg )
+wrapMain : ( SpaFrontend.Model, Cmd SpaFrontend.Msg ) -> ( Types.FrontendModel, Cmd Types.FrontendMsg )
 wrapMain ( model, cmd ) =
     ( { main = model }, Cmd.map Types.MainMsg cmd )
 
@@ -59,12 +60,25 @@ updateFromBackend msg model =
         Types.TfNoOp ->
             ( model, Cmd.none )
 
+        Types.TfShared tfShared ->
+            let
+                { main } =
+                    model
+
+                ( shared, sharedCmd ) =
+                    Shared.updateFromBackend tfShared model.main.shared
+
+                newMain =
+                    { main | shared = shared }
+            in
+            ( { model | main = newMain }, Cmd.map (Types.MainMsg << SpaFrontend.Shared) sharedCmd )
+
 
 view : Types.FrontendModel -> Browser.Document Types.FrontendMsg
 view model =
     let
         { title, body } =
-            SpaMain.view model.main
+            SpaFrontend.view model.main
 
         frontendBody =
             List.map (Html.map Types.MainMsg) body
@@ -74,5 +88,5 @@ view model =
 
 subscriptions : Types.FrontendModel -> Sub Types.FrontendMsg
 subscriptions model =
-    SpaMain.subscriptions model.main
+    SpaFrontend.subscriptions model.main
         |> Sub.map Types.MainMsg

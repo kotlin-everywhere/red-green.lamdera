@@ -1,4 +1,4 @@
-module SpaMain exposing (Model, Msg(..), init, subscriptions, update, view)
+module SpaFrontend exposing (Model, Msg(..), init, subscriptions, update, view)
 
 import Browser
 import Browser.Navigation as Nav exposing (Key)

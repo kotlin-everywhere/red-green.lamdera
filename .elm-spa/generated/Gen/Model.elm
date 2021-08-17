@@ -11,6 +11,6 @@ import Pages.NotFound
 type Model
     = Redirecting_
     | AboutUs Gen.Params.AboutUs.Params
-    | Home_ Gen.Params.Home_.Params
+    | Home_ Gen.Params.Home_.Params Pages.Home_.Model
     | NotFound Gen.Params.NotFound.Params
 

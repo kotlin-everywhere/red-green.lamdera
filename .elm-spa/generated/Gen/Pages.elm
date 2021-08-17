@@ -44,7 +44,8 @@ init route =
 update : Msg -> Model -> Shared.Model -> Url -> Key -> ( Model, Effect Msg )
 update msg_ model_ =
     case ( msg_, model_ ) of
-    
+        ( Msg.Home_ msg, Model.Home_ params model ) ->
+            pages.home_.update params msg model
 
         _ ->
             \_ _ _ -> ( model_, Effect.none )
@@ -59,8 +60,8 @@ view model_ =
         Model.AboutUs params ->
             pages.aboutUs.view params ()
     
-        Model.Home_ params ->
-            pages.home_.view params ()
+        Model.Home_ params model ->
+            pages.home_.view params model
     
         Model.NotFound params ->
             pages.notFound.view params ()
@@ -75,8 +76,8 @@ subscriptions model_ =
         Model.AboutUs params ->
             pages.aboutUs.subscriptions params ()
     
-        Model.Home_ params ->
-            pages.home_.subscriptions params ()
+        Model.Home_ params model ->
+            pages.home_.subscriptions params model
     
         Model.NotFound params ->
             pages.notFound.subscriptions params ()
@@ -88,12 +89,12 @@ subscriptions model_ =
 
 pages :
     { aboutUs : Static Gen.Params.AboutUs.Params
-    , home_ : Static Gen.Params.Home_.Params
+    , home_ : Bundle Gen.Params.Home_.Params Pages.Home_.Model Pages.Home_.Msg
     , notFound : Static Gen.Params.NotFound.Params
     }
 pages =
     { aboutUs = static Pages.AboutUs.view Model.AboutUs
-    , home_ = static Pages.Home_.view Model.Home_
+    , home_ = bundle Pages.Home_.page Model.Home_ Msg.Home_
     , notFound = static Pages.NotFound.view Model.NotFound
     }
 

@@ -8,5 +8,6 @@ import Pages.Home_
 import Pages.NotFound
 
 
-type Msg = None
+type Msg
+    = Home_ Pages.Home_.Msg
 

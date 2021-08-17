@@ -1,10 +1,13 @@
 module Shared exposing
-    ( Flags
+    ( Connection(..)
+    , Flags
     , Model
     , Msg
+    , ToFrontend(..)
     , init
     , subscriptions
     , update
+    , updateFromBackend
     )
 
 import Json.Decode as Json
@@ -16,16 +19,26 @@ type alias Flags =
 
 
 type alias Model =
-    {}
+    { connection : Connection }
+
+
+type Connection
+    = Online
+    | Offline
 
 
 type Msg
     = NoOp
 
 
+type ToFrontend
+    = TfNoOp
+    | TfConnected
+
+
 init : Request -> Flags -> ( Model, Cmd Msg )
 init _ _ =
-    ( {}, Cmd.none )
+    ( { connection = Offline }, Cmd.none )
 
 
 update : Request -> Msg -> Model -> ( Model, Cmd Msg )
@@ -38,3 +51,13 @@ update _ msg model =
 subscriptions : Request -> Model -> Sub Msg
 subscriptions _ _ =
     Sub.none
+
+
+updateFromBackend : ToFrontend -> Model -> ( Model, Cmd Msg )
+updateFromBackend msg model =
+    case msg of
+        TfNoOp ->
+            ( model, Cmd.none )
+
+        TfConnected ->
+            ( { model | connection = Online }, Cmd.none )

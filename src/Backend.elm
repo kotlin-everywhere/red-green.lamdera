@@ -1,6 +1,7 @@
 module Backend exposing (..)
 
-import Lamdera exposing (ClientId, SessionId)
+import Lamdera exposing (ClientId, SessionId, onConnect, sendToFrontend)
+import Shared
 import Types exposing (..)
 
 
@@ -35,6 +36,9 @@ update msg model =
         BeNoOp ->
             ( model, Cmd.none )
 
+        BeNewClient clientId ->
+            ( model, sendToFrontend clientId (TfShared Shared.TfConnected) )
+
 
 updateFromFrontend : SessionId -> ClientId -> ToBackend -> Model -> ( Model, Cmd BackendMsg )
 updateFromFrontend _ _ msg model =
@@ -45,4 +49,4 @@ updateFromFrontend _ _ msg model =
 
 subscriptions : Model -> Sub BackendMsg
 subscriptions _ =
-    Sub.none
+    onConnect (always BeNewClient)

@@ -1,10 +1,12 @@
 module Types exposing (..)
 
-import SpaMain
+import Lamdera exposing (ClientId)
+import Shared
+import SpaFrontend
 
 
 type alias FrontendModel =
-    { main : SpaMain.Model }
+    { main : SpaFrontend.Model }
 
 
 type alias BackendModel =
@@ -12,7 +14,7 @@ type alias BackendModel =
 
 
 type FrontendMsg
-    = MainMsg SpaMain.Msg
+    = MainMsg SpaFrontend.Msg
 
 
 type ToBackend
@@ -21,7 +23,9 @@ type ToBackend
 
 type BackendMsg
     = BeNoOp
+    | BeNewClient ClientId
 
 
 type ToFrontend
     = TfNoOp
+    | TfShared Shared.ToFrontend
