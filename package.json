@@ -1,0 +1,6 @@
+{
+  "private": true,
+  "dependencies": {
+    "elm-spa": "^6.0.4"
+  }
+}
